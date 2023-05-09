@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    /* center the form */
+    form {
+      margin: auto;
+      max-width: 600px;
+    }
+    
+    /* style form fields */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    select,
+    input[type="text"],
+    input[type="date"] {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    
+    select:focus,
+    input[type="text"]:focus,
+    input[type="date"]:focus {
+      outline: none;
+      box-shadow: 0 0 5px #ccc;
+    }
+    
+    .form-check {
+      margin-bottom: 10px;
+    }
+    
+    /* style submit button */
+    button[type="submit"] {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    
+    button[type="submit"]:hover {
+      background-color: #0069d9;
+    }
+  </style>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="profile_name">Profile Name</label>
+      <input type="text" class="form-control" id="profile_name" name="profile_name">
+    </div>
+    <div class="form-group">
+      <label for="repeat_every">Repeat Every</label>
+      <select class="form-control" id="repeat_every" name="repeat_every">
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="start_date">Start Date</label>
+      <input type="date" class="form-control" id="start_date" name="start_date">
+    </div>
+    <div class="form-group">
+      <label for="ends_on">Ends On</label>
+      <input type="date" class="form-control" id="ends_on" name="ends_on">
+    </div>
+    <div class="form-group">
+      <label for="expense_account">Expense Account</label>
+      <select class="form-control" id="expense_account" name="expense_account">
+        <option value="account1">Account 1</option>
+        <option value="account2">Account 2</option>
+        <option value="account3">Account 3</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="expense_type">Expense Type</label>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="expense_type" id="expense_type1" value="option1">
+        <label class="form-check-label" for="expense_type1">
+          Option 1
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="expense_type" id="expense_type2" value="option2">
+        <label class="form-check-label" for="expense_type2">
+          Option 2
+        </label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="amount">Amount</label>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <select class="form-control" id="currency" name="currency">
+            <option value="INR">INR</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+          </select>
+        </div>
+        <input type="text" class="form-control" id="amount" name="amount">
+      </div>
+    </div>
+    <div class="form-group">
+        <label for="repeat_every">Paid Through</label>
+        <select class="form-control" id="repeat_every" name="repeat_every">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="repeat_every">Vendor</label>
+        <select class="form-control" id="repeat_every" name="repeat_every">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="repeat_every">GST Treatment</label>
+        <select class="form-control" id="repeat_every" name="repeat_every">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="repeat_every">Destination Of Supply</label>
+        <select class="form-control" id="repeat_every" name="repeat_every">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="repeat_every">Tax</label>
+        <select class="form-control" id="repeat_every" name="repeat_every">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="profile_name">Notes</label>
+        <input type="text" class="form-control" id="profile_name" name="profile_name">
+      </div>
+      <div class="form-group">
+        <label for="repeat_every">Customer name</label>
+        <select class="form-control" id="repeat_every" name="repeat_every">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+ 
+{% endblock %}

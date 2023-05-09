@@ -20,5 +20,6 @@ urlpatterns = [
     path('cleer/<int:id>',views.cleer,name='cleer'),
     path('add_unit',views.add_unit,name='add_unit'),
     path('sales',views.add_sales,name='add_sales'),
-    
+    path('recurringhome',views.recurringhome,name='recurringhome'),
+
 ]
