@@ -21,5 +21,8 @@ urlpatterns = [
     path('add_unit',views.add_unit,name='add_unit'),
     path('sales',views.add_sales,name='add_sales'),
     path('recurringhome',views.recurringhome,name='recurringhome'),
+    path('add_expense',views.add_expense,name='add_expense'),
+    path('recurringbase',views.recurringbase,name='recurringbase'),
+
 
 ]

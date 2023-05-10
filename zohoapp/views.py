@@ -6,6 +6,8 @@ from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.db.models import Q
+from .models import Expense
+
 
 
 
@@ -347,5 +349,50 @@ def add_sales(request):
     return render(request,'additem.html')
 
 @login_required(login_url='login')
+def recurringbase(request):
+    return render(request,'recurring_base.html')
+
+@login_required(login_url='login')
 def recurringhome(request):
     return render(request,'recurring_home.html')
+
+
+def add_expense(request):
+    if request.method == 'POST':
+        profile_name = request.POST.get('profile_name')
+        repeat_every = request.POST.get('repeat_every')
+        start_date = request.POST.get('start_date')
+        ends_on = request.POST.get('ends_on')
+        expense_account = request.POST.get('expense_account')
+        expense_type = request.POST.get('expense_type')
+        amount = request.POST.get('amount')
+        currency = request.POST.get('currency')
+        paidthrough = request.POST.get('paidthrough')
+        vendor = request.POST.get('vendor')
+        gsttreatment = request.POST.get('gsttreatment')
+        destination = request.POST.get('destination')
+        tax = request.POST.get('tax')
+        notes = request.POST.get('notes')
+        customername = request.POST.get('customername')
+
+        expense = Expense(
+            profile_name=profile_name,
+            repeat_every=repeat_every,
+            start_date=start_date,
+            ends_on=ends_on,
+            expense_account=expense_account,
+            expense_type=expense_type,
+            amount=amount,
+            currency=currency,
+            paidthrough=paidthrough,
+            vendor=vendor,
+            gsttreatment=gsttreatment,
+            destination=destination,
+            tax=tax,
+            notes=notes,
+            customername=customername
+        )
+        expense.save()
+        return render(request, 'recurring_home.html')
+    else:
+        return render(request, 'recurring_home.html')
