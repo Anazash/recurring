@@ -74,8 +74,7 @@
         <option value="monthly">6 Months</option>
         <option value="monthly">Year</option>
         <option value="monthly">2 Years</option>
-        <option value="monthly">3.
-             Years</option>
+        <option value="monthly">3 Years</option>
       </select>      
     </div>
     <div class="form-group">
@@ -130,12 +129,18 @@
     </div>
     <div class="form-group">
         <label for="vendor">Vendor</label>
-        <select  id="vendor" name="vendor">
-          <option value="daily">Daily</option>
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
-        </select>
-    </div>
+        <div class="input-group">
+          <select class="form-control" id="vendor" name="vendor">
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+          </select>
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="addVendorButton" onclick="window.location.href='{% url 'vendor' %}'">Add new vendor</button>
+          </div>
+        </div>
+      </div>
+      
     <div class="form-group">
         <label for="gsttreatment">GST Treatment</label>
         <select  id="gsttreatment" name="gsttreatment">
@@ -165,13 +170,18 @@
         <input type="text"  id="notes" name="notes">
     </div>
     <div class="form-group">
-        <label for="customername">Customer name</label>
-        <select  id="customername" name="customername">
-          <option value="daily">Daily</option>
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
-        </select>
-    </div>
+        <label for="vendor">Customer name</label>
+        <div class="input-group">
+          <select class="form-control" id="customername" name="customername">
+            <option value="daily">anas</option>
+            <option value="weekly">shahana</option>
+            <option value="monthly">ashraf</option>
+          </select>
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="addVendorButton">Add new customer</button>
+          </div>
+        </div>
+      </div>
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Save</button>
         <button type="button" class="btn btn-secondary">Cancel</button>

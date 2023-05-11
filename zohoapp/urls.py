@@ -23,6 +23,8 @@ urlpatterns = [
     path('recurringhome',views.recurringhome,name='recurringhome'),
     path('add_expense',views.add_expense,name='add_expense'),
     path('recurringbase',views.recurringbase,name='recurringbase'),
-
-
+    path('show_recurring/<int:expense_id>/', views.show_recurring, name='show_recurring'),
+    path('expense_details', views.expense_details, name='expense_details'),
+    path('vendor/',views.vendor,name='vendor'),
+    path('add_vendor/',views.add_vendor,name='add_vendor'),
 ]
