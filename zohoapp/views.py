@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.db.models import Q
 from .models import Expense
 from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 
 
 
@@ -356,51 +357,47 @@ def recurringbase(request):
 
 @login_required(login_url='login')
 def recurringhome(request):
-    return render(request,'recurring_home.html')
+    selected_vendor_id = request.GET.get('vendor')
+    vendors = vendor_table.objects.filter(user=request.user)
+    return render(request, 'recurring_home.html', {
+        'vendors': vendors,
+        'selected_vendor_id': selected_vendor_id
+    })
 
+
+from django.shortcuts import get_object_or_404
+from .models import Expense, vendor_table
 
 def add_expense(request):
     if request.method == 'POST':
-        profile_name = request.POST.get('profile_name')
-        repeat_every = request.POST.get('repeat_every')
-        start_date = request.POST.get('start_date')
-        ends_on = request.POST.get('ends_on')
-        expense_account = request.POST.get('expense_account')
-        expense_type = request.POST.get('expense_type')
-        amount = request.POST.get('amount')
-        currency = request.POST.get('currency')
-        paidthrough = request.POST.get('paidthrough')
-        vendor = request.POST.get('vendor')
-        gsttreatment = request.POST.get('gsttreatment')
-        destination = request.POST.get('destination')
-        tax = request.POST.get('tax')
-        notes = request.POST.get('notes')
-        customername = request.POST.get('customername')
-
-        expense = Expense(
-            profile_name=profile_name,
-            repeat_every=repeat_every,
-            start_date=start_date,
-            ends_on=ends_on,
-            expense_account=expense_account,
-            expense_type=expense_type,
-            amount=amount,
-            currency=currency,
-            paidthrough=paidthrough,
-            vendor=vendor,
-            gsttreatment=gsttreatment,
-            destination=destination,
-            tax=tax,
-            notes=notes,
-            customername=customername
-        )
+        profile_name = request.POST['profile_name']
+        repeat_every = request.POST['repeat_every']
+        start_date = request.POST['start_date']
+        ends_on = request.POST['ends_on']
+        expense_account = request.POST['expense_account']
+        expense_type = request.POST['expense_type']
+        goods_label = request.POST.get('goods_label')
+        amount = request.POST['amount']
+        currency = request.POST['currency']
+        paidthrough = request.POST['paidthrough']
+        vendor_id = request.POST['vendor']
+        vendor = get_object_or_404(vendor_table, pk=vendor_id)
+        gst = request.POST['gst']
+        destination= request.POST['destination']
+        tax= request.POST['tax']
+        notes = request.POST['notes']
+        customername= request.POST['customername']
+        expense = Expense(profile_name=profile_name, repeat_every=repeat_every, start_date=start_date,
+                          ends_on=ends_on, expense_account=expense_account, expense_type=expense_type,
+                          goods_label=goods_label, amount=amount, currency=currency, paidthrough=paidthrough,
+                          vendor=vendor, gst=gst,customername=customername,notes=notes,tax=tax,destination=destination)
         expense.save()
-        return render(request, 'recurring_home.html')
+        return redirect('recurringbase')
     else:
-        return render(request, 'recurring_home.html')
-    
+        vendors = vendor_table.objects.all()
+        return render(request, 'add_expense.html', {'vendors': vendors})
 
-from django.shortcuts import get_object_or_404
+
 
 def show_recurring(request, expense_id):
     expense = get_object_or_404(Expense, id=expense_id)
@@ -505,3 +502,31 @@ def add_vendor(request):
                  
         return redirect('recurringhome')
         
+def edit_expense(request, expense_id):
+    expense = get_object_or_404(Expense, id=expense_id)
+    vendors = vendor_table.objects.all()
+
+
+    if request.method == 'POST':
+        expense.profile_name = request.POST.get('profile_name')
+        expense.repeat_every = request.POST.get('repeat_every')
+        expense.start_date = request.POST.get('start_date')
+        expense.ends_on = request.POST.get('ends_on')
+        expense.expense_account = request.POST.get('expense_account')
+        expense.expense_type = request.POST.get('expense_type')
+        expense.amount = request.POST.get('amount')
+        expense.currency = request.POST.get('currency')
+        expense.paidthrough = request.POST.get('paidthrough')
+        expense.vendor_id = request.POST.get('vendor')
+        expense.goods_label= request.POST.get('goods_label')
+        expense.gst = request.POST.get('gst')
+        expense.destination = request.POST.get('destination')
+        expense.tax = request.POST.get('tax')
+        expense.notes = request.POST.get('notes')
+        expense.customername = request.POST.get('customername')
+
+        expense.save()
+        return redirect('recurringbase')
+
+    else:
+        return render(request, 'edit_expense.html', {'expense': expense, 'vendors': vendors})

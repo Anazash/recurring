@@ -2,46 +2,83 @@
 {% load static %}
 {% block content %}
 
-<div style="text-align:center;margin-top:260px;margin-left:170px;">
+<div class="fixed-top" style="top: 8rem; margin-left: 18rem;" >
+<div style="height: 600px; overflow-y: scroll;">
+<div class="card" style="width: 80%; margin-left:130px; background-color:grey;">
+  <div class="card-body">
     <table class="table">
-        <thead>
-          <tr>
-            <th>Profile Name</th>
-            <th>Repeat Every</th>
-            <th>Start Date</th>
-            <th>Ends On</th>
-            <th>Expense Account</th>
-            <th>Expense Type</th>
-            <th>Amount</th>
-            <th>Paid Through</th>
-            <th>Vendor</th>
-            <th>GST Treatment</th>
-            <th>Destination Of Supply</th>
-            <th>Tax</th>
-            <th>Notes</th>
-            <th>Customer Name</th>
-          </tr>
-        </thead>
         <tbody>
+          <tr>
+            <td>Profile Name:</td>
+            <td>{{ expense.profile_name }}</td>
+          </tr>
             <tr>
-              <td>{{ expense.profile_name }}</td>
+              <td>Repeat Every:</td>
               <td>{{ expense.repeat_every }}</td>
+            </tr>
+            <tr>
+              <td>Start Date:</td>
               <td>{{ expense.start_date }}</td>
+            </tr>
+            <tr>
+              <td>Ends On:</td>
               <td>{{ expense.ends_on }}</td>
+            </tr>
+            <tr>
+              <td>Expense Account:</td>
               <td>{{ expense.expense_account }}</td>
-              <td>{{ expense.expense_type }}</td>
+            </tr>
+            <tr>
+              <td>Expense Type:</td>
+              <td>{{ expense.expense_type }} {{expense.goods_label}}</td>
+            </tr>
+            <tr>
+              <td>Amount:</td>
               <td>{{ expense.amount }}</td>
+            </tr>
+            <tr>
+              <td>Paid Through:</td>
               <td>{{ expense.paidthrough }}</td>
+            </tr>
+            <tr>
+              <td>Vendor:</td>
               <td>{{ expense.vendor }}</td>
-              <td>{{ expense.gsttreatment }}</td>
+            </tr>
+            <tr>
+              <td>GST Treatment:</td>
+              <td>{{ expense.gst }}</td>
+            </tr>
+            <tr>
+              <td>Destination Of Supply:</td>
               <td>{{ expense.destination }}</td>
+            </tr>
+            <tr>
+              <td>Tax:</td>
               <td>{{ expense.tax }}</td>
+            </tr>
+            <tr>
+              <td>Notes:</td>
               <td>{{ expense.notes }}</td>
+            </tr>
+            <tr>
+              <td>Customer Name:</td>
               <td>{{ expense.customername }}</td>
             </tr>
           </tbody>
-          
-      </table>
+    </table>
+  </div>
+  <div class="card-footer text-muted">
+    <div class="row">
+      <div class="col-md-6">
+        <button type="button" class="btn btn-primary"  onclick="window.location.href='{% url 'edit_expense' expense.id %}'">Edit</button>
+      </div>
+      <div class="col-md-6 text-right">
+        <button type="button" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 </div>
 
    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

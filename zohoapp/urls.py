@@ -27,4 +27,6 @@ urlpatterns = [
     path('expense_details', views.expense_details, name='expense_details'),
     path('vendor/',views.vendor,name='vendor'),
     path('add_vendor/',views.add_vendor,name='add_vendor'),
+    path('edit_expense/<int:expense_id>/', views.edit_expense, name='edit_expense'),
+
 ]

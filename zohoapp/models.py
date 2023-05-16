@@ -72,24 +72,8 @@ class History(models.Model):
     message=models.CharField(max_length=255)
     p=models.ForeignKey(AddItem,on_delete=models.CASCADE)
 
-class Expense(models.Model):
-    profile_name = models.CharField(max_length=200)
-    repeat_every = models.CharField(max_length=20)
-    start_date = models.DateField()
-    ends_on = models.DateField()
-    expense_account = models.CharField(max_length=200)
-    expense_type = models.CharField(max_length=200)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    currency = models.CharField(max_length=20)
-    paidthrough = models.CharField(max_length=200)
-    vendor = models.CharField(max_length=255, default='')
-    gsttreatment = models.CharField(max_length=200)
-    destination = models.CharField(max_length=200)
-    tax = models.CharField(max_length=200)
-    notes = models.CharField(max_length=200)
-    customername = models.CharField(max_length=200)
-    
 class vendor_table(models.Model):
+    name = models.CharField(max_length=255)
     user=models.ForeignKey(User,on_delete=models.CASCADE,null=True)
     salutation=models.CharField(max_length=25)
     first_name=models.CharField(max_length=50)
@@ -127,6 +111,34 @@ class vendor_table(models.Model):
     sphone=models.CharField(max_length=100)
     sfax=models.CharField(max_length=100)
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+from django.db import models
+
+class Expense(models.Model):
+    profile_name = models.CharField(max_length=255)
+    repeat_every = models.CharField(max_length=50)
+    start_date = models.DateField()
+    ends_on = models.DateField()
+    expense_account = models.CharField(max_length=255)
+    expense_type = models.CharField(max_length=50)
+    goods_label = models.CharField(max_length=255, default='')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    currency = models.CharField(max_length=10)
+    paidthrough = models.CharField(max_length=50)
+    vendor = models.ForeignKey(vendor_table, on_delete=models.CASCADE)
+    gst = models.CharField(max_length=255, blank=True)
+    destination = models.CharField(max_length=255, blank=True)
+    tax = models.CharField(max_length=255, blank=True)
+    notes = models.CharField(max_length=255, blank=True)
+    customername = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.profile_name
+
+
+
 class contact_person_table(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE,null=True)
     vendor=models.ForeignKey(vendor_table,on_delete=models.CASCADE,null=True)
@@ -144,3 +156,5 @@ class remarks_table(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE,null=True)
     vendor=models.ForeignKey(vendor_table,on_delete=models.CASCADE,null=True)
     remarks=models.CharField(max_length=500)
+    
+    
