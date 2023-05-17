@@ -9,6 +9,7 @@ from django.db.models import Q
 from .models import Expense
 from django.shortcuts import render, get_object_or_404
 from django.shortcuts import get_object_or_404
+from .models import Account
 
 
 
@@ -359,10 +360,15 @@ def recurringbase(request):
 def recurringhome(request):
     selected_vendor_id = request.GET.get('vendor')
     vendors = vendor_table.objects.filter(user=request.user)
+    selected_vendor = vendor_table.objects.filter(id=selected_vendor_id).first()
+    gst_number = selected_vendor.gst_number if selected_vendor else ''
     return render(request, 'recurring_home.html', {
         'vendors': vendors,
-        'selected_vendor_id': selected_vendor_id
+        'selected_vendor_id': selected_vendor_id,
+        'gst_number': gst_number,
     })
+
+
 
 
 from django.shortcuts import get_object_or_404
@@ -401,6 +407,7 @@ def add_expense(request):
 
 def show_recurring(request, expense_id):
     expense = get_object_or_404(Expense, id=expense_id)
+    
     return render(request, 'show_recurring.html', {'expense': expense})
 
 
@@ -530,3 +537,37 @@ def edit_expense(request, expense_id):
 
     else:
         return render(request, 'edit_expense.html', {'expense': expense, 'vendors': vendors})
+
+
+@login_required(login_url='login')
+def newexp(request):
+    return render(request,'create_expense.html')
+
+
+def save_data(request):
+    if request.method == 'POST':
+        account_type = request.POST.get('accountType')
+        account_name = request.POST.get('accountName')
+        account_code = request.POST.get('accountCode')
+        description = request.POST.get('description')
+
+        account = Account(accountType=account_type, accountName=account_name, accountCode=account_code, description=description)
+        account.save()
+
+        return redirect('recurringhome')
+
+    return render(request, 'recurring_home.html')
+
+
+from django.http import JsonResponse
+from .models import Account
+
+def get_account_names(request):
+    account_names = Account.objects.values_list('accountName', flat=True)
+    return JsonResponse(list(account_names), safe=False)
+
+
+@login_required(login_url='login')
+def profileshow(request):
+    expenses = Expense.objects.all()
+    return render(request, 'show_recurring.html', {'expenses': expenses})

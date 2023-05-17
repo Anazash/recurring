@@ -87,12 +87,13 @@
     </div>
     <div class="form-group">
       <label for="expense_account">Expense Account</label>
-      <select  id="expense_account" name="expense_account">
-        <option value="account1">Account 1</option>
-        <option value="account2">Account 2</option>
-        <option value="account3">Account 3</option>
-      </select>
-    </div>
+      <div class="input-group">
+        <select class="form-control" id="expense_account" name="expense_account"></select>
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="button" id="addVendorButton" onclick="window.location.href='{% url 'newexp' %}'">New Account</button>
+        </div>
+      </div>
+    </div>    
     <div class="form-group">
       <label for="expense_type">Expense Type</label>
       <div class="form-check">
@@ -152,18 +153,22 @@
   </div>
   
       
-    <div class="form-group">
-      <label for="gst">GST Treatment</label>
-        <select name="gst" id="gst" class="form-control">
-          <option value="value" selected></option>
-            <option value="Registered Business-Regular Business that is registered under GST">Registered Business-Regular Business that is registered under GST</option>
-            <option value="Registered Business-Composition Business that is registered under the Composition scheme in GST">Registered Business-Composition Business that is registered under the Composition scheme
-              in GST</option>
-            <option value="Unregistered Business-not Registered under GST">Unregistered Business-not Registered under GST</option>
-            <option value="Overseas- Persons with who you do import or exports of supplies outside india">Overseas- Persons with who you do import or exports of supplies outside india</option>
-            <option value="Special Economic Zone">Special Economic Zone</option>
-        </select><br>
+  <div class="form-group">
+    <label for="gst">GST Treatment</label>
+    <select name="gst" id="gst" class="form-control" onchange="toggleTextBox()">
+      <option value="" selected></option>
+      <option value="Registered Business-Regular Business that is registered under GST">Registered Business-Regular Business that is registered under GST</option>
+      <option value="Registered Business-Composition Business that is registered under the Composition scheme in GST">Registered Business-Composition Business that is registered under the Composition scheme in GST</option>
+      <option value="Unregistered Business-not Registered under GST">Unregistered Business-not Registered under GST</option>
+      <option value="Overseas- Persons with whom you do import or exports of supplies outside India">Overseas- Persons with whom you do import or exports of supplies outside India</option>
+      <option value="Special Economic Zone">Special Economic Zone</option>
+    </select><br>
+    <div id="textboxContainer" style="display: none;">
+      <input type="text" id="textbox" class="form-control" placeholder="Enter additional information" value="{{ gst_number }}">
     </div>
+</div>
+
+  
     <div class="form-group">
       <label for="destination">Destination of supply</label>
         <select name="destination" id="destination" class="form-control">
@@ -236,6 +241,35 @@
       goodsBottom.style.display = 'none';
     }
   });
+</script>
+<script>
+  function toggleTextBox() {
+    var selectedOption = document.getElementById("gst").value;
+    var textboxContainer = document.getElementById("textboxContainer");
+    
+    if (selectedOption !== "Unregistered Business-not Registered under GST") {
+      textboxContainer.style.display = "block";
+    } else {
+      textboxContainer.style.display = "none";
+    }
+  }
+</script>
+<script>
+  // Fetch previously added account names
+  fetch('{% url 'get_account_names' %}')
+    .then(response => response.json())
+    .then(data => {
+      const expenseAccountDropdown = document.getElementById('expense_account');
+
+      // Populate the dropdown with account names
+      data.forEach(accountName => {
+        const option = document.createElement('option');
+        option.value = accountName;
+        option.textContent = accountName;
+        expenseAccountDropdown.appendChild(option);
+      });
+    })
+    .catch(error => console.error(error));
 </script>
    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

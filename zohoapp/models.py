@@ -157,4 +157,8 @@ class remarks_table(models.Model):
     vendor=models.ForeignKey(vendor_table,on_delete=models.CASCADE,null=True)
     remarks=models.CharField(max_length=500)
     
-    
+class Account(models.Model):
+    accountType = models.CharField(max_length=255)
+    accountName = models.CharField(max_length=255)
+    accountCode = models.CharField(max_length=255)
+    description = models.TextField()

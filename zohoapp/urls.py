@@ -1,5 +1,6 @@
 from django.urls import path,include
 from.import views
+from .views import save_data
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -28,5 +29,8 @@ urlpatterns = [
     path('vendor/',views.vendor,name='vendor'),
     path('add_vendor/',views.add_vendor,name='add_vendor'),
     path('edit_expense/<int:expense_id>/', views.edit_expense, name='edit_expense'),
-
+    path('newexp/',views.newexp,name='newexp'),
+    path('save-data/', save_data, name='save_data'),
+    path('get-account-names/', views.get_account_names, name='get_account_names'),
+    path('profileshow',views.profileshow,name='profileshow'),
 ]
