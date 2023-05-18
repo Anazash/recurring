@@ -4,9 +4,10 @@
 
 
     
-<div class="fixed-top" style="top: 8rem;display:flex;" >
+<div class="fixed-top" style="top: 8rem;" >
+ <div style="height: 600px; overflow-y: scroll;width:100%;display:flex;">
   <div style="width:90%;">
-<table class="table" style="width:50%;margin-left:500px;margin-top:40px">
+   <table class="table" style="width:50%;margin-left:500px;margin-top:40px">
     <thead>
       <tr style="color:white;">
         <th>Profile Name</th>
@@ -25,12 +26,18 @@
       </tr>
       {% endfor %}
     </tbody>
-  </table>
-</div>
-<div style="margin-left:-150px;">
+   </table>
+  </div>
+<div style="margin-left:-50px;">
   <button type="button" class="btn btn-success ml-auto" style="width: 100px;"onclick="window.location.href='{% url 'recurringhome' %}'">+new</button>
 </div>
 </div>
+</div>
+<div class="fixed-bottom" style="bottom: 0;">
+  <img src="{% static 'images/flowchart.png' %}" alt="Flowchart Image" style="width: 100%;">
+</div>
+
+
 
   
 

@@ -392,18 +392,18 @@ def add_expense(request):
         destination= request.POST['destination']
         tax= request.POST['tax']
         notes = request.POST['notes']
-        customername= request.POST['customername']
+        customer_id = request.POST['customername']
+        customer_obj = get_object_or_404(customer, pk=customer_id)
         expense = Expense(profile_name=profile_name, repeat_every=repeat_every, start_date=start_date,
                           ends_on=ends_on, expense_account=expense_account, expense_type=expense_type,
                           goods_label=goods_label, amount=amount, currency=currency, paidthrough=paidthrough,
-                          vendor=vendor, gst=gst,customername=customername,notes=notes,tax=tax,destination=destination)
+                          vendor=vendor, gst=gst, customername=customer_obj.customerName,
+                          notes=notes, tax=tax, destination=destination)
         expense.save()
         return redirect('recurringbase')
     else:
         vendors = vendor_table.objects.all()
         return render(request, 'add_expense.html', {'vendors': vendors})
-
-
 
 def show_recurring(request, expense_id):
     expense = get_object_or_404(Expense, id=expense_id)
@@ -512,7 +512,7 @@ def add_vendor(request):
 def edit_expense(request, expense_id):
     expense = get_object_or_404(Expense, id=expense_id)
     vendors = vendor_table.objects.all()
-
+    customers = customer.objects.all()  # Fetch all customers
 
     if request.method == 'POST':
         expense.profile_name = request.POST.get('profile_name')
@@ -525,18 +525,21 @@ def edit_expense(request, expense_id):
         expense.currency = request.POST.get('currency')
         expense.paidthrough = request.POST.get('paidthrough')
         expense.vendor_id = request.POST.get('vendor')
-        expense.goods_label= request.POST.get('goods_label')
+        expense.goods_label = request.POST.get('goods_label')
         expense.gst = request.POST.get('gst')
         expense.destination = request.POST.get('destination')
         expense.tax = request.POST.get('tax')
         expense.notes = request.POST.get('notes')
-        expense.customername = request.POST.get('customername')
+        customer_id = request.POST.get('customername')  # Get the customer ID from POST data
+        customer_obj = get_object_or_404(customer, pk=customer_id)  # Fetch the customer object
+        expense.customername = customer_obj.customerName  # Set the customer name in the expense object
 
         expense.save()
         return redirect('recurringbase')
 
     else:
-        return render(request, 'edit_expense.html', {'expense': expense, 'vendors': vendors})
+        return render(request, 'edit_expense.html', {'expense': expense, 'vendors': vendors, 'customers': customers})
+
 
 
 @login_required(login_url='login')
@@ -571,3 +574,94 @@ def get_account_names(request):
 def profileshow(request):
     expenses = Expense.objects.all()
     return render(request, 'show_recurring.html', {'expenses': expenses})
+
+
+def add_customer(request):
+    sb=payment_terms.objects.all()
+    return render(request,'customer.html',{'sb':sb})
+def entr_custmr(request):
+    if request.user.is_authenticated:
+        if request.method=='POST':
+            type=request.POST.get('type')
+            txtFullName=request.POST['txtFullName']
+            cpname=request.POST['cpname']
+           
+            email=request.POST.get('myEmail')
+            wphone=request.POST.get('wphone')
+            mobile=request.POST.get('mobile')
+            skname=request.POST.get('skname')
+            desg=request.POST.get('desg')      
+            dept=request.POST.get('dept')
+            wbsite=request.POST.get('wbsite')
+
+            gstt=request.POST.get('gstt')
+            posply=request.POST.get('posply')
+            tax1=request.POST.get('tax1')
+            crncy=request.POST.get('crncy')
+            obal=request.POST.get('obal')
+
+            select = request.POST.get('pterms')
+        try:
+            pterms = payment_terms.objects.get(id=select)
+        except payment_terms.DoesNotExist:
+            pterms = None
+
+            plst=request.POST.get('plst')
+            plang=request.POST.get('plang')
+            fbk=request.POST.get('fbk')
+            twtr=request.POST.get('twtr')
+        
+            atn=request.POST.get('atn')
+            ctry=request.POST.get('ctry')
+            
+            addrs=request.POST.get('addrs')
+            addrs1=request.POST.get('addrs1')
+            bct=request.POST.get('bct')
+            bst=request.POST.get('bst')
+            bzip=request.POST.get('bzip')
+            bpon=request.POST.get('bpon')
+            bfx=request.POST.get('bfx')
+
+            sal=request.POST.get('sal')
+            ftname=request.POST.get('ftname')
+            ltname=request.POST.get('ltname')
+            mail=request.POST.get('mail')
+            bworkpn=request.POST.get('bworkpn')
+            bmobile=request.POST.get('bmobile')
+
+            bskype=request.POST.get('bskype')
+            bdesg=request.POST.get('bdesg')
+            bdept=request.POST.get('bdept')
+            u = User.objects.get(id = request.user.id)
+
+          
+            ctmr=customer(customerName=txtFullName,customerType=type,
+                        companyName=cpname,customerEmail=email,customerWorkPhone=wphone,
+                         customerMobile=mobile,skype=skname,designation=desg,department=dept,
+                           website=wbsite,GSTTreatment=gstt,placeofsupply=posply, Taxpreference=tax1,
+                             currency=crncy,OpeningBalance=obal,PaymentTerms=pterms,
+                                PriceList=plst,PortalLanguage=plang,Facebook=fbk,Twitter=twtr,
+                                 Attention=atn,country=ctry,Address1=addrs,Address2=addrs1,
+                                  city=bct,state=bst,zipcode=bzip,phone1=bpon,
+                                   fax=bfx,CPsalutation=sal,Firstname=ftname,
+                                    Lastname=ltname,CPemail=mail,CPphone=bworkpn,
+                                    CPmobile= bmobile,CPskype=bskype,CPdesignation=bdesg,
+                                     CPdepartment=bdept,user=u )
+            ctmr.save()  
+            
+            return redirect("recurringhome")
+        return render(request,'recurring_home.html')
+def payment_term(request):
+    if request.method=='POST':
+        term=request.POST.get('term')
+        day=request.POST.get('day')
+        ptr=payment_terms(Terms=term,Days=day)
+        ptr.save()
+        return redirect("add_customer")
+
+from django.http import JsonResponse
+
+def get_customer_names(request):
+    customers = customer.objects.all()
+    customer_names = [{'id': c.id, 'name': c.customerName} for c in customers]
+    return JsonResponse(customer_names, safe=False)

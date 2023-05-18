@@ -148,13 +148,15 @@
             <tr>
               <td>Customer Name:</td>
               <td>
-                  <select name="customername">
-                      <option value="anas" {% if expense.customername == "anas" %}selected{% endif %}>anas</option>
-                      <option value="shahana" {% if expense.customername == "shahana" %}selected{% endif %}>shahana</option>
-                      <option value="ashraf" {% if expense.customername == "ashraf" %}selected{% endif %}>ashraf</option>
-                  </select>
+                <select name="customername">
+                  {% for cust in customers %}
+                      <option value="{{ cust.id }}" {% if expense.customername == cust.customerName %}selected{% endif %}>{{ cust.customerName }}</option>
+                  {% endfor %}
+              </select>
+              
               </td>
-            </tr>
+          </tr>
+          
           </tbody>
       </table>
       <button type="submit" class="btn btn-primary">Save</button>

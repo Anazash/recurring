@@ -110,8 +110,10 @@
       </div>
       <div class="form-group" id="goods-bottom" style="display:none">
         <label for="goods-label">HSN</label>
-        <input type="text" class="form-control" id="goods-label" name="goods_label">
+        <input type="text" class="form-control" id="goods-label" name="goods_label" oninput="validateHSN(this)">
+        <small id="hsn-error" class="text-danger"></small>
       </div>
+      
     </div>
     <div class="form-group">
       <label for="amount">Amount</label>
@@ -139,11 +141,11 @@
       <label for="vendor">Vendor</label>
       <div class="input-group">
           <select class="form-control" id="vendor" name="vendor">
-              {% for vendor in vendors %}
-                  <option value="{{vendor.pk}}" {% if vendor.pk|stringformat:"s" == selected_vendor_id %}selected{% endif %}>
-                      {{vendor}}
-                  </option>
-              {% endfor %}
+            {% for vendor in vendors %}
+            <option value="{{vendor.pk}}" data-gst-number="{{vendor.gst_number}}" {% if vendor.pk|stringformat:"s" == selected_vendor_id %}selected{% endif %}>
+              {{vendor}}
+            </option>
+          {% endfor %}
           </select>
           <div class="input-group-append">
               <button class="btn btn-primary" type="button" id="addVendorButton"
@@ -164,9 +166,9 @@
       <option value="Special Economic Zone">Special Economic Zone</option>
     </select><br>
     <div id="textboxContainer" style="display: none;">
-      <input type="text" id="textbox" class="form-control" placeholder="Enter additional information" value="{{ gst_number }}">
+      <input type="text" id="textbox" class="form-control" placeholder="Enter additional information" value="">
     </div>
-</div>
+  </div>
 
   
     <div class="form-group">
@@ -205,21 +207,19 @@
         <input type="text"  id="notes" name="notes">
     </div>
     <div class="form-group">
-        <label for="vendor">Customer name</label>
-        <div class="input-group">
-          <select class="form-control" id="customername" name="customername" class="form-control">
-            <option value="daily">anas</option>
-            <option value="weekly">shahana</option>
-            <option value="monthly">ashraf</option>
-          </select>
-          <div class="input-group-append">
-            <button class="btn btn-primary" type="button" id="addVendorButton">Add new customer</button>
-          </div>
+      <label for="vendor">Customer name</label>
+      <div class="input-group">
+        <select class="form-control" id="customername" name="customername" class="form-control">
+          <!-- Existing options -->
+        </select>
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="button" id="addVendorButton">Add new customer</button>
         </div>
       </div>
+    </div>
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Save</button>
-        <button type="button" class="btn btn-secondary">Cancel</button>
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'recurringbase' %}'">Cancel</button>
       </div>
 </form>
 </div>
@@ -270,6 +270,84 @@
       });
     })
     .catch(error => console.error(error));
+</script>
+
+<script>
+  function toggleTextBox() {
+    var gstTreatment = document.getElementById("gst").value;
+    var textboxContainer = document.getElementById("textboxContainer");
+    var textbox = document.getElementById("textbox");
+
+    if (gstTreatment !== "Unregistered Business-not Registered under GST") {
+      textboxContainer.style.display = "block";
+      textbox.value = getGstNumber();
+    } else {
+      textboxContainer.style.display = "none";
+      textbox.value = "";
+    }
+  }
+
+  function getGstNumber() {
+    var vendorSelect = document.getElementById("vendor");
+    var selectedVendorId = vendorSelect.value;
+    var selectedVendorOption = vendorSelect.options[vendorSelect.selectedIndex];
+    var gstNumber = selectedVendorOption.getAttribute("data-gst-number");
+    return gstNumber;
+  }
+
+  function updateGstNumber() {
+    var textbox = document.getElementById("textbox");
+    textbox.value = getGstNumber();
+  }
+</script>
+
+<script>
+  function validateHSN(input) {
+    const hsnValue = input.value.trim();
+    const hsnError = document.getElementById('hsn-error');
+  
+    if (hsnValue.length === 6 && /^[0-9]+$/.test(hsnValue)) {
+      hsnError.textContent = '';
+    } else {
+      hsnError.textContent = 'Please enter a valid 6-digit number.';
+    }
+  }
+  </script>
+
+<script>
+  // Get the dropdown element
+  const customerDropdown = document.getElementById('customername');
+
+  // Function to fetch customer names and update the dropdown
+  function fetchCustomerNames() {
+    // Make an AJAX request to the server to fetch the customer names
+    fetch('/get_customer_names')
+      .then(response => response.json())
+      .then(data => {
+        // Clear existing options
+        customerDropdown.innerHTML = '';
+
+        // Add new options based on fetched customer names
+        data.forEach(customer => {
+          const option = document.createElement('option');
+          option.value = customer.id; // Set the appropriate value for the option
+          option.textContent = customer.name; // Set the customer name as the option text
+          customerDropdown.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+
+  // Add click event listener to the "Add new customer" button
+  const addCustomerButton = document.getElementById('addVendorButton');
+  addCustomerButton.addEventListener('click', () => {
+    window.location.href = '{% url 'add_customer' %}';
+  });
+
+  // Fetch customer names when the page loads
+  fetchCustomerNames();
 </script>
    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

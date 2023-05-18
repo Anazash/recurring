@@ -33,4 +33,10 @@ urlpatterns = [
     path('save-data/', save_data, name='save_data'),
     path('get-account-names/', views.get_account_names, name='get_account_names'),
     path('profileshow',views.profileshow,name='profileshow'),
+    path('add_customer',views.add_customer,name='add_customer'),
+    path('entr_custmr',views.entr_custmr,name='entr_custmr'),
+    path('payment_term',views.payment_term,name='payment_term'),
+    path('get_customer_names', views.get_customer_names, name='get_customer_names'),
+
+
 ]
