@@ -37,6 +37,6 @@ urlpatterns = [
     path('entr_custmr',views.entr_custmr,name='entr_custmr'),
     path('payment_term',views.payment_term,name='payment_term'),
     path('get_customer_names', views.get_customer_names, name='get_customer_names'),
-
+    path('expense/delete/<int:expense_id>/', views.delete_expense, name='delete_expense'),
 
 ]
