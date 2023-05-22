@@ -1,92 +1,306 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-
-<div class="fixed-top" style="top: 8rem; margin-left: 18rem;" >
-  <div style="height: 600px; overflow-y: scroll;">
-      <div class="card" style="width: 80%; margin-left:130px; background-color:grey;">
-        <div class="card-body">
-          <table class="table">
-            <tbody>
-              <tr>
-                <td>Profile Name:</td>
-                <td>{{ expense.profile_name }}</td>
-              </tr>
-              <tr>
-                <td>Repeat Every:</td>
-                <td>{{ expense.repeat_every }}</td>
-              </tr>
-              <tr>
-                <td>Start Date:</td>
-                <td>{{ expense.start_date }}</td>
-              </tr>
-              <tr>
-                <td>Ends On:</td>
-                <td>{{ expense.ends_on }}</td>
-              </tr>
-              <tr>
-                <td>Expense Account:</td>
-                <td>{{ expense.expense_account }}</td>
-              </tr>
-              <tr>
-                <td>Expense Type:</td>
-                <td>{{ expense.expense_type }} {{expense.goods_label}}</td>
-              </tr>
-              <tr>
-                <td>Amount:</td>
-                <td>{{ expense.amount }}</td>
-              </tr>
-              <tr>
-                <td>Paid Through:</td>
-                <td>{{ expense.paidthrough }}</td>
-              </tr>
-              <tr>
-                <td>Vendor:</td>
-                <td>{{ expense.vendor }}</td>
-              </tr>
-              <tr>
-                <td>GST Treatment:</td>
-                <td>{{ expense.gst }}</td>
-              </tr>
-              <tr>
-                <td>Destination Of Supply:</td>
-                <td>{{ expense.destination }}</td>
-              </tr>
-              <tr>
-                <td>Tax:</td>
-                <td>{{ expense.tax }}</td>
-              </tr>
-              <tr>
-                <td>Notes:</td>
-                <td>{{ expense.notes }}</td>
-              </tr>
-              <tr>
-                <td>Customer Name:</td>
-                <td>{{ expense.customername }}</td>
-             </tr>
-           </tbody>
-         </table>
-        </div>
-        <div class="card-footer text-muted">
+    
+<section>
+  <div class="row fixed-top" style="top: 7rem; margin-left: 18rem;">
+    <div class="col-md-12" style="right: 0;">
+      <div class="row">
+        <div class="col-md-3" style="border-right: 1px solid white;height: 100vh;margin-left:;position: fixed;">
           <div class="row">
-            <div class="col-md-6">
-              <button type="button" class="btn btn-primary"  onclick="window.location.href='{% url 'edit_expense' expense.id %}'">Edit</button>
+            <div class="col-md-4"><a class="text-white" style="font-size: 1.5rem;">All Expense</a></div>
+            <div class="col-md-4" style="margin-top: -3rem;">
+              <a style="color: #ccc;width: 4rem;height: 2rem;margin-top: 3rem;" class="btn btn-success" href="{% url 'recurringhome' %}">
+                <i class="fa-solid fa-plus"></i>New
+              </a>
             </div>
-            <div class="col-md-6 text-right">
-              <form method="POST" action="{% url 'delete_expense' expense.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Delete</button>
-              </form>
+          </div> 
+          <table class="table text-white">
+            <thead>
+              <tr>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for e in expenses %}
+              <tr>
+                <td>
+                  <a class="text-white profile-link" data-profile-id="{{ e.id }}">{{ e.profile_name }}</a>
+                </td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td><hr></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="col-md-9" style="margin-left: 25rem;">
+          <div class="row" style="position: fixed;">
+            <div class="col-md-4" style="position: fixed;">
+              <a class="text-white" style="font-size: 1.5rem;">
+                <h2 id="profile-name">{{ expense.profile_name }}</h2>
+              </a>
             </div>
             
+            <div class="col-md-4" style="margin-top: -3rem;margin-left: 14rem;position: fixed;">
+              <a style="color: #ccc;width: 4rem;height: 2rem;margin-top: 3rem;" class="btn btn-light text-dark" onclick="location.href='{% url 'edit_expense' expense.id %}'">
+                <i class="fa fa-pencil"></i>
+              </a>
+              <a style="color: #ccc;" href="#">
+                <form action="#" method="post">
+                  {% csrf_token %}
+                </form>
+              </a>
+              <a href="{% url 'delete_expense' expense.id %}" style="color: #ccc;height: 2rem;margin-top: -4rem;margin-left: 17rem;" class="btn btn-danger text-white">
+                Delete
+              </a>
+            </div>
           </div>
+        
+         <!-- ============================ tab view (detail page )==================================== -->
+    
+    
+    
+         
+    
+        <div style="height: 600px; overflow-y: scroll;">
+        <div class="tabs"><br><br>
+        <div class="tab-header"><br><br>
+    
+         <div class="active">
+           <i class="fa fa code"></i>OverView
+         </div>
+    
+        </div>
+    
+        <div class="tab-indicator"></div>
+    
+    
+        <div class="tab-body">
+         <div class="activ ">
+          <h6 class="mr-5">Repeat Every:</h6>
+          <h6 style="margin-top: -1.7rem; margin-left: 10rem;" >{{expense.repeat_every}}</h6> <br>
+    
+           <h6 class="mr-5">Start Date:</h6>
+           <h6 style="margin-top: -1.7rem; margin-left: 10rem;" >{{expense.start_date}}</h6> 
+    
+           <h6 class="mr-4 ">Ends On:</h6>
+           <h6 style="margin-top: -1.9rem; margin-left: 10rem; margin-bottom: 2rem;" >{{expense.ends_on}}</h6> 
+          <h6 class="mr-5">Expense Account:</h6> <br>
+          <h6 style="margin-top: -3rem; margin-left: 10rem;" >{{expense.expense_account}}</h6> <br>
+          <h6 class="mr-5">Expense Type:</h6>
+          <h6 style="margin-top: -2rem; margin-left: 10rem;" >{{ expense.expense_type }} {{expense.goods_label}}</h6> <br>
+          <h6 class="mr-5">Amount:</h6>
+          <h6 style="margin-top: -2rem; margin-left: 10rem;" >{{expense.amount}}</h6> <br>
+          <h6 class="mr-5">Paid Through:</h6> <br>
+          <h6 style="margin-top: -3rem; margin-left: 10rem;" >{{expense.paidthrough}}</h6> <br>
+          <h6 class="mr-5">Vendor:</h6>
+          <h6 style="margin-top: -2rem; margin-left: 10rem;" >{{expense.vendor}}</h6> <br>
+          <h6 class="mr-5">GST Treatment:</h6>
+          <h6 style="margin-top: -2rem; margin-left: 10rem;" >{{expense.gst}}</h6><br>
+          <h6 class="mr-5">Destination Of Supply:</h6>
+          <h6 style="margin-top: -1.7rem; margin-left: 12rem;" >{{expense.destination}}</h6> <br>
+          <h6 class="mr-5">Tax:</h6>
+          <h6 style="margin-top: -2rem; margin-left: 10rem;" >{{expense.tax}}</h6> <br>
+          <h6 class="mr-5">Notes:</h6>
+          <h6 style="margin-top: -2rem; margin-left: 10rem;" >{{expense.notes}}</h6> <br>
+          <h6 class="mr-5">Customer Name:</h6>
+          <h6 style="margin-top: -2rem; margin-left: 10rem;" >{{expense.customername}}</h6> <br>
+           
+         </div>
+    
+         <div >
+           <h2>There is no transaction yet</h2>
+           <p>do something</p>
+         </div>
+    
+       
+        <table class="table text-white">
+          <thead>
+            {% for i in history %}
+            <tr>
+              <th>{{i.date}}</th>
+              <th>{{i.message}}</th>
+    
+            </tr>
+            {% endfor %}
+          </thead>
+        </table>
+          
+        
+          
+          
+         </div>
+    
+    
+        </div>
+    
+    <script>
+    
+    let tabHeader = document.getElementsByClassName("tab-header")[0];
+    let tabIndicator = document.getElementsByClassName("tab-indicator")[0];
+    let tabBody = document.getElementsByClassName("tab-body")[0];
+    
+    let tabsPane =tabHeader.getElementsByTagName("div")
+    for(let i=0;i<tabsPane.length;i++){
+    tabsPane[i].addEventListener("click",function(){
+     tabHeader.getElementsByClassName("active")[0].classList.remove("active");
+     tabsPane[i].classList.add("active");
+    
+     tabBody.getElementsByClassName("activ")[0].classList.remove("activ");
+    tabBody.getElementsByTagName("div")[i].classList.add("activ");
+    
+       tabIndicator.style.left = 'calc(calc(100% / 3) * ${i})';
+    
+    });
+    }
+    
+    
+    </script>
+    
+    
        </div>
+    
+       </div>
+    
       </div>
-    </div>
-</div>
+ 
+   </div>
+  
+  </div>
+   </div>
+  </div>
+</section>
 
    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
+ 
 {% endblock %}
+
+
+
+
+
+
+
+{% comment %} {% extends 'recurring_base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="fixed-top" style="top: 8rem; margin-left: 18rem;">
+    <div style="height: 600px; overflow-y: scroll;">
+        <div class="card" style="width: 80%; margin-left:130px; background-color:grey;">
+            <div class="card-body">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>Profile Name:</td>
+                            <td>{{ expense.profile_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Repeat Every:</td>
+                            <td>{{ expense.repeat_every }}</td>
+                        </tr>
+                        <tr>
+                            <td>Start Date:</td>
+                            <td>{{ expense.start_date }}</td>
+                        </tr>
+                        <tr>
+                            <td>Ends On:</td>
+                            <td>{{ expense.ends_on }}</td>
+                        </tr>
+                        <tr>
+                            <td>Expense Account:</td>
+                            <td>{{ expense.expense_account }}</td>
+                        </tr>
+                        <tr>
+                            <td>Expense Type:</td>
+                            <td>{{ expense.expense_type }} {{expense.goods_label}}</td>
+                        </tr>
+                        <tr>
+                            <td>Amount:</td>
+                            <td>{{ expense.amount }}</td>
+                        </tr>
+                        <tr>
+                            <td>Paid Through:</td>
+                            <td>{{ expense.paidthrough }}</td>
+                        </tr>
+                        <tr>
+                            <td>Vendor:</td>
+                            <td>{{ expense.vendor }}</td>
+                        </tr>
+                        <tr>
+                            <td>GST Treatment:</td>
+                            <td>{{ expense.gst }}</td>
+                        </tr>
+                        <tr>
+                            <td>Destination Of Supply:</td>
+                            <td>{{ expense.destination }}</td>
+                        </tr>
+                        <tr>
+                            <td>Tax:</td>
+                            <td>{{ expense.tax }}</td>
+                        </tr>
+                        <tr>
+                            <td>Notes:</td>
+                            <td>{{ expense.notes }}</td>
+                        </tr>
+                        <tr>
+                            <td>Customer Name:</td>
+                            <td>{{ expense.customername }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-muted">
+                <div class="row">
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-primary"
+                            onclick="window.location.href='{% url 'edit_expense' expense.id %}'">Edit</button>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <form method="POST" action="{% url 'delete_expense' expense.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ {% endcomment %}
+

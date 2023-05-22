@@ -351,10 +351,7 @@ def add_sales(request):
         return redirect('additem')
     return render(request,'additem.html')
 
-@login_required(login_url='login')
-def recurringbase(request):
-    expenses = Expense.objects.all()
-    return render(request, 'recurring_base.html',{'expenses': expenses})
+
 
 @login_required(login_url='login')
 def recurringhome(request):
@@ -405,9 +402,15 @@ def add_expense(request):
         vendors = vendor_table.objects.all()
         return render(request, 'add_expense.html', {'vendors': vendors})
 
+@login_required(login_url='login')
+def recurringbase(request):
+    expenses = Expense.objects.all()
+    return render(request, 'recurring_base.html',{'expenses': expenses})
+
 def show_recurring(request, expense_id):
     expense = get_object_or_404(Expense, id=expense_id)
-    
+   
+
     return render(request, 'show_recurring.html', {'expense': expense})
 
 
