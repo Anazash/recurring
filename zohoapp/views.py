@@ -383,103 +383,6 @@ def add_sales(request):
         acc.save()
         return redirect('additem')
     return render(request,'additem.html')
-
-
-@login_required(login_url='login')
-def vendor(request):
-    return render(request,'create_vendor.html')
-
-
-
-@login_required(login_url='login')
-def add_vendor(request):
-    if request.method=="POST":
-        vendor_data=vendor_table()
-        vendor_data.salutation=request.POST['salutation']
-        vendor_data.first_name=request.POST['first_name']
-        vendor_data.last_name=request.POST['last_name']
-        vendor_data.company_name=request.POST['company_name']
-        vendor_data.vendor_display_name=request.POST['v_display_name']
-        vendor_data.vendor_email=request.POST['vendor_email']
-        vendor_data.vendor_wphone=request.POST['w_phone']
-        vendor_data.vendor_mphone=request.POST['m_phone']
-        vendor_data.skype_number=request.POST['skype_number']
-        vendor_data.designation=request.POST['designation']
-        vendor_data.department=request.POST['department']
-        vendor_data.website=request.POST['website']
-        vendor_data.gst_treatment=request.POST['gst']
-
-        x=request.POST['gst']
-        if x=="Unregistered Business-not Registered under GST":
-            vendor_data.pan_number=request.POST['pan_number']
-            vendor_data.gst_number="null"
-        else:
-            vendor_data.gst_number=request.POST['gst_number']
-            vendor_data.pan_number=request.POST['pan_number']
-
-        vendor_data.source_supply=request.POST['source_supply']
-        vendor_data.currency=request.POST['currency']
-        vendor_data.opening_bal=request.POST['opening_bal']
-        vendor_data.payment_terms=request.POST['payment_terms']
-
-        user_id=request.user.id
-        udata=User.objects.get(id=user_id)
-        vendor_data.user=udata
-        vendor_data.battention=request.POST['battention']
-        vendor_data.bcountry=request.POST['bcountry']
-        vendor_data.baddress=request.POST['baddress']
-        vendor_data.bcity=request.POST['bcity']
-        vendor_data.bstate=request.POST['bstate']
-        vendor_data.bzip=request.POST['bzip']
-        vendor_data.bphone=request.POST['bphone']
-        vendor_data.bfax=request.POST['bfax']
-
-        vendor_data.sattention=request.POST['sattention']
-        vendor_data.scountry=request.POST['scountry']
-        vendor_data.saddress=request.POST['saddress']
-        vendor_data.scity=request.POST['scity']
-        vendor_data.sstate=request.POST['sstate']
-        vendor_data.szip=request.POST['szip']
-        vendor_data.sphone=request.POST['sphone']
-        vendor_data.sfax=request.POST['sfax']
-        vendor_data.save()
-
-        vdata=vendor_table.objects.get(id=vendor_data.id)
-        vendor=vdata
-        rdata=remarks_table()
-        rdata.remarks=request.POST['remark']
-        rdata.user=udata
-        rdata.vendor=vdata
-        rdata.save()
-
-
-
-        salutation =request.POST.getlist('salutation[]')
-        first_name =request.POST.getlist('first_name[]')
-        last_name =request.POST.getlist('last_name[]')
-        email =request.POST.getlist('email[]')
-        work_phone =request.POST.getlist('wphone[]')
-        mobile =request.POST.getlist('mobile[]')
-        skype_number =request.POST.getlist('skype[]')
-        designation =request.POST.getlist('designation[]')
-        department =request.POST.getlist('department[]') 
-        vdata=vendor_table.objects.get(id=vendor_data.id)
-        vendor=vdata
-       
-
-        if len(salutation)==len(first_name)==len(last_name)==len(email)==len(work_phone)==len(mobile)==len(skype_number)==len(designation)==len(department):
-            mapped2=zip(salutation,first_name,last_name,email,work_phone,mobile,skype_number,designation,department)
-            mapped2=list(mapped2)
-            print(mapped2)
-            for ele in mapped2:
-                created = contact_person_table.objects.get_or_create(salutation=ele[0],first_name=ele[1],last_name=ele[2],email=ele[3],
-                         work_phone=ele[4],mobile=ele[5],skype_number=ele[6],designation=ele[7],department=ele[8],user=udata,vendor=vendor)
-        
-       
-                 
-        return redirect('base')
-
-
         
 
 def sample(request):
@@ -1970,8 +1873,10 @@ def banking_home(request):
     return render(request,'banking.html',{'view':viewitem})       
     
 def create_banking(request):
+    company = company_details.objects.get(user = request.user)
+    print(company.company_name)
     banks = bank.objects.filter(user=request.user, acc_type="bank")
-    return render(request,'create_banking.html',{"bank":banks})    
+    return render(request,'create_banking.html',{"bank":banks,"company":company})    
 
 def save_banking(request):
     if request.method == "POST":
@@ -2073,7 +1978,357 @@ def save_banking_edit(request,id):
     
 def basenav(request):
     company = company_details.objects.get(user = request.user)
+    print(company.company_name)
     context = {
                 'company' : company
             }
     return render(request,'base.html',context)
+
+@login_required(login_url='login')
+def recurringhome(request):
+    selected_vendor_id = request.GET.get('vendor')
+    vendors = vendor_table.objects.filter(user=request.user)
+    selected_vendor = vendor_table.objects.filter(id=selected_vendor_id).first()
+    gst_number = selected_vendor.gst_number if selected_vendor else ''
+    return render(request, 'recurring_home.html', {
+        'vendors': vendors,
+        'selected_vendor_id': selected_vendor_id,
+        'gst_number': gst_number,
+    })
+
+
+
+
+from django.shortcuts import get_object_or_404
+from .models import Expense, vendor_table
+
+def add_expense(request):
+    if request.method == 'POST':
+        profile_name = request.POST['profile_name']
+        repeat_every = request.POST['repeat_every']
+        start_date = request.POST['start_date']
+        ends_on = request.POST['ends_on']
+        expense_account = request.POST.get('expense_account', '')  # Use get() with a default value
+        expense_type = request.POST['expense_type']
+        goods_label = request.POST.get('goods_label')
+        amount = request.POST['amount']
+        currency = request.POST['currency']
+        paidthrough = request.POST['paidthrough']
+        vendor_id = request.POST['vendor']
+        vendor = get_object_or_404(vendor_table, pk=vendor_id)
+        gst = request.POST['gst']
+        destination = request.POST['destination']
+        tax = request.POST['tax']
+        notes = request.POST['notes']
+        customer_id = request.POST['customername']
+        customer_obj = get_object_or_404(customer, pk=customer_id)
+        expense = Expense(
+            profile_name=profile_name, repeat_every=repeat_every, start_date=start_date,
+            ends_on=ends_on, expense_account=expense_account, expense_type=expense_type,
+            goods_label=goods_label, amount=amount, currency=currency, paidthrough=paidthrough,
+            vendor=vendor, gst=gst, customername=customer_obj.customerName,
+            notes=notes, tax=tax, destination=destination
+        )
+        expense.save()
+        return redirect('recurringbase')
+    else:
+        vendors = vendor_table.objects.all()
+        return render(request, 'add_expense.html', {'vendors': vendors})
+
+
+@login_required(login_url='login')
+def recurringbase(request):
+    expenses = Expense.objects.all()
+    return render(request, 'recurring_base.html',{'expenses': expenses})
+
+def show_recurring(request, expense_id):
+    expense = get_object_or_404(Expense, id=expense_id)
+    expenses = Expense.objects.all()
+    return render(request, 'show_recurring.html', {'expense': expense,'expenses': expenses})
+
+
+def expense_details(request):
+    expenses = Expense.objects.all()
+    return render(request, 'recurring_base.html',{'expenses': expenses})
+
+@login_required(login_url='login')
+def vendor(request):
+    return render(request,'create_vendor.html')
+
+
+
+@login_required(login_url='login')
+def add_vendor(request):
+    if request.method=="POST":
+        vendor_data=vendor_table()
+        vendor_data.salutation=request.POST['salutation']
+        vendor_data.first_name=request.POST['first_name']
+        vendor_data.last_name=request.POST['last_name']
+        vendor_data.company_name=request.POST['company_name']
+        vendor_data.vendor_display_name=request.POST['v_display_name']
+        vendor_data.vendor_email=request.POST['vendor_email']
+        vendor_data.vendor_wphone=request.POST['w_phone']
+        vendor_data.vendor_mphone=request.POST['m_phone']
+        vendor_data.skype_number=request.POST['skype_number']
+        vendor_data.designation=request.POST['designation']
+        vendor_data.department=request.POST['department']
+        vendor_data.website=request.POST['website']
+        vendor_data.gst_treatment=request.POST['gst']
+
+        x=request.POST['gst']
+        if x=="Unregistered Business-not Registered under GST":
+            vendor_data.pan_number=request.POST['pan_number']
+            vendor_data.gst_number="null"
+        else:
+            vendor_data.gst_number=request.POST['gst_number']
+            vendor_data.pan_number=request.POST['pan_number']
+
+        vendor_data.source_supply=request.POST['source_supply']
+        vendor_data.currency=request.POST['currency']
+        vendor_data.opening_bal=request.POST['opening_bal']
+        vendor_data.payment_terms=request.POST['payment_terms']
+
+        user_id=request.user.id
+        udata=User.objects.get(id=user_id)
+        vendor_data.user=udata
+        vendor_data.battention=request.POST['battention']
+        vendor_data.bcountry=request.POST['bcountry']
+        vendor_data.baddress=request.POST['baddress']
+        vendor_data.bcity=request.POST['bcity']
+        vendor_data.bstate=request.POST['bstate']
+        vendor_data.bzip=request.POST['bzip']
+        vendor_data.bphone=request.POST['bphone']
+        vendor_data.bfax=request.POST['bfax']
+
+        vendor_data.sattention=request.POST['sattention']
+        vendor_data.scountry=request.POST['scountry']
+        vendor_data.saddress=request.POST['saddress']
+        vendor_data.scity=request.POST['scity']
+        vendor_data.sstate=request.POST['sstate']
+        vendor_data.szip=request.POST['szip']
+        vendor_data.sphone=request.POST['sphone']
+        vendor_data.sfax=request.POST['sfax']
+        vendor_data.save()
+# .......................................................adding to remaks table.....................
+        vdata=vendor_table.objects.get(id=vendor_data.id)
+        vendor=vdata
+        rdata=remarks_table()
+        rdata.remarks=request.POST['remark']
+        rdata.user=udata
+        rdata.vendor=vdata
+        rdata.save()
+
+
+#  ...........................adding multiple rows of table to model  ........................................................       
+        salutation =request.POST.getlist('salutation[]')
+        first_name =request.POST.getlist('first_name[]')
+        last_name =request.POST.getlist('last_name[]')
+        email =request.POST.getlist('email[]')
+        work_phone =request.POST.getlist('wphone[]')
+        mobile =request.POST.getlist('mobile[]')
+        skype_number =request.POST.getlist('skype[]')
+        designation =request.POST.getlist('designation[]')
+        department =request.POST.getlist('department[]') 
+        vdata=vendor_table.objects.get(id=vendor_data.id)
+        vendor=vdata
+       
+
+        if len(salutation)==len(first_name)==len(last_name)==len(email)==len(work_phone)==len(mobile)==len(skype_number)==len(designation)==len(department):
+            mapped2=zip(salutation,first_name,last_name,email,work_phone,mobile,skype_number,designation,department)
+            mapped2=list(mapped2)
+            print(mapped2)
+            for ele in mapped2:
+                created = contact_person_table.objects.get_or_create(salutation=ele[0],first_name=ele[1],last_name=ele[2],email=ele[3],
+                         work_phone=ele[4],mobile=ele[5],skype_number=ele[6],designation=ele[7],department=ele[8],user=udata,vendor=vendor)
+        
+       
+                 
+        return redirect('recurringhome')
+        
+def edit_expense(request, expense_id):
+    expense = get_object_or_404(Expense, id=expense_id)
+    vendors = vendor_table.objects.all()
+    customers = customer.objects.all()  # Fetch all customers
+
+    if request.method == 'POST':
+        expense.profile_name = request.POST.get('profile_name')
+        expense.repeat_every = request.POST.get('repeat_every')
+        expense.start_date = request.POST.get('start_date')
+        expense.ends_on = request.POST.get('ends_on')
+        expense.expense_account = request.POST.get('expense_account')
+        expense.expense_type = request.POST.get('expense_type')
+        expense.amount = request.POST.get('amount')
+        expense.currency = request.POST.get('currency')
+        expense.paidthrough = request.POST.get('paidthrough')
+        expense.vendor_id = request.POST.get('vendor')
+        expense.goods_label = request.POST.get('goods_label')
+        expense.gst = request.POST.get('gst')
+        expense.destination = request.POST.get('destination')
+        expense.tax = request.POST.get('tax')
+        expense.notes = request.POST.get('notes')
+        customer_id = request.POST.get('customername')  # Get the customer ID from POST data
+        customer_obj = get_object_or_404(customer, pk=customer_id)  # Fetch the customer object
+        expense.customername = customer_obj.customerName  # Set the customer name in the expense object
+
+        expense.save()
+        return redirect('recurringbase')
+
+    else:
+        return render(request, 'edit_expense.html', {'expense': expense, 'vendors': vendors, 'customers': customers})
+
+
+
+@login_required(login_url='login')
+def newexp(request):
+    return render(request,'create_expense.html')
+
+
+def save_data(request):
+    if request.method == 'POST':
+        account_type = request.POST.get('accountType')
+        account_name = request.POST.get('accountName')
+        account_code = request.POST.get('accountCode')
+        description = request.POST.get('description')
+
+        account = Account(accountType=account_type, accountName=account_name, accountCode=account_code, description=description)
+        account.save()
+
+        return redirect('recurringhome')
+
+    return render(request, 'recurring_home.html')
+
+
+from django.http import JsonResponse
+from .models import Account
+
+def get_account_names(request):
+    account_names = Account.objects.values_list('accountName', flat=True)
+    return JsonResponse(list(account_names), safe=False)
+
+
+@login_required(login_url='login')
+def profileshow(request,expense_id):
+    expenses = Expense.objects.all()
+    expense = get_object_or_404(Expense, id=expense_id)
+
+    return render(request, 'show_recurring.html', {'expenses': expenses,'expense':expense})
+
+
+def add_customer(request):
+    sb=payment_terms.objects.all()
+    return render(request,'customer.html',{'sb':sb})
+def entr_custmr(request):
+    if request.user.is_authenticated:
+        if request.method=='POST':
+            type=request.POST.get('type')
+            txtFullName=request.POST['txtFullName']
+            cpname=request.POST['cpname']
+           
+            email=request.POST.get('myEmail')
+            wphone=request.POST.get('wphone')
+            mobile=request.POST.get('mobile')
+            skname=request.POST.get('skname')
+            desg=request.POST.get('desg')      
+            dept=request.POST.get('dept')
+            wbsite=request.POST.get('wbsite')
+
+            gstt=request.POST.get('gstt')
+            posply=request.POST.get('posply')
+            tax1=request.POST.get('tax1')
+            crncy=request.POST.get('crncy')
+            obal=request.POST.get('obal')
+
+            select = request.POST.get('pterms')
+        try:
+            pterms = payment_terms.objects.get(id=select)
+        except payment_terms.DoesNotExist:
+            pterms = None
+
+            plst=request.POST.get('plst')
+            plang=request.POST.get('plang')
+            fbk=request.POST.get('fbk')
+            twtr=request.POST.get('twtr')
+        
+            atn=request.POST.get('atn')
+            ctry=request.POST.get('ctry')
+            
+            addrs=request.POST.get('addrs')
+            addrs1=request.POST.get('addrs1')
+            bct=request.POST.get('bct')
+            bst=request.POST.get('bst')
+            bzip=request.POST.get('bzip')
+            bpon=request.POST.get('bpon')
+            bfx=request.POST.get('bfx')
+
+            sal=request.POST.get('sal')
+            ftname=request.POST.get('ftname')
+            ltname=request.POST.get('ltname')
+            mail=request.POST.get('mail')
+            bworkpn=request.POST.get('bworkpn')
+            bmobile=request.POST.get('bmobile')
+
+            bskype=request.POST.get('bskype')
+            bdesg=request.POST.get('bdesg')
+            bdept=request.POST.get('bdept')
+            u = User.objects.get(id = request.user.id)
+
+          
+            ctmr=customer(customerName=txtFullName,customerType=type,
+                        companyName=cpname,customerEmail=email,customerWorkPhone=wphone,
+                         customerMobile=mobile,skype=skname,designation=desg,department=dept,
+                           website=wbsite,GSTTreatment=gstt,placeofsupply=posply, Taxpreference=tax1,
+                             currency=crncy,OpeningBalance=obal,PaymentTerms=pterms,
+                                PriceList=plst,PortalLanguage=plang,Facebook=fbk,Twitter=twtr,
+                                 Attention=atn,country=ctry,Address1=addrs,Address2=addrs1,
+                                  city=bct,state=bst,zipcode=bzip,phone1=bpon,
+                                   fax=bfx,CPsalutation=sal,Firstname=ftname,
+                                    Lastname=ltname,CPemail=mail,CPphone=bworkpn,
+                                    CPmobile= bmobile,CPskype=bskype,CPdesignation=bdesg,
+                                     CPdepartment=bdept,user=u )
+            ctmr.save()  
+            
+            return redirect("recurringhome")
+        return render(request,'recurring_home.html')
+def payment_term(request):
+    if request.method=='POST':
+        term=request.POST.get('term')
+        day=request.POST.get('day')
+        ptr=payment_terms(Terms=term,Days=day)
+        ptr.save()
+        return redirect("add_customer")
+
+from django.http import JsonResponse
+
+def get_customer_names(request):
+    customers = customer.objects.all()
+    customer_names = [{'id': c.id, 'name': c.customerName} for c in customers]
+    return JsonResponse(customer_names, safe=False)
+
+
+def delete_expense(request, expense_id):
+    expense = get_object_or_404(Expense, id=expense_id)
+    expense.delete()
+    return redirect('recurringbase')
+
+
+def get_profile_details(request, profile_id):
+    expense = get_object_or_404(Expense, id=profile_id)
+    vendor = expense.vendor 
+    data = {
+        'id': expense.id,
+        'profile_name': expense.profile_name,
+        'repeat_every': expense.repeat_every,
+        'start_date': expense.start_date,
+        'ends_on': expense.ends_on,
+        'expense_account': expense.expense_account,
+        'expense_type': expense.expense_type,
+        'amount': expense.amount,
+        'paidthrough': expense.paidthrough,
+        'vendor': vendor.vendor_display_name,  
+        'gst': expense.gst,
+        'destination': expense.destination,
+        'tax': expense.tax,
+        'notes': expense.notes,
+        'customername': expense.customername,
+    }
+    return JsonResponse(data)

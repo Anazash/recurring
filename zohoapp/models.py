@@ -332,3 +332,41 @@ class bank(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
     acc_type = models.CharField(max_length=220,default='', null=True, blank=True)
     bank_name = models.CharField(max_length=220,default='', null=True, blank=True)
+    
+    from django.db import models
+
+
+class Expense(models.Model):
+    profile_name = models.CharField(max_length=255)
+    repeat_every = models.CharField(max_length=50)
+    start_date = models.DateField()
+    ends_on = models.DateField()
+    expense_account = models.CharField(max_length=255)
+    expense_type = models.CharField(max_length=50)
+    goods_label = models.CharField(max_length=255, default='')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    currency = models.CharField(max_length=10)
+    paidthrough = models.CharField(max_length=50)
+    vendor = models.ForeignKey(vendor_table, on_delete=models.CASCADE)
+    gst = models.CharField(max_length=255, blank=True)
+    destination = models.CharField(max_length=255, blank=True)
+    tax = models.CharField(max_length=255, blank=True)
+    notes = models.CharField(max_length=255, blank=True)
+    customername = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.profile_name
+
+
+
+class remarks_table(models.Model):
+    user=models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    vendor=models.ForeignKey(vendor_table,on_delete=models.CASCADE,null=True)
+    remarks=models.CharField(max_length=500)
+    
+class Account(models.Model):
+    accountType = models.CharField(max_length=255)
+    accountName = models.CharField(max_length=255)
+    accountCode = models.CharField(max_length=255)
+    description = models.TextField()
+    

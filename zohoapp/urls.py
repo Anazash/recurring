@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
-from .views import EmailAttachementView
+from .views import EmailAttachementView, save_data
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -25,8 +25,6 @@ urlpatterns = [
     path('cleer/<int:id>',views.cleer,name='cleer'),
     path('add_unit',views.add_unit,name='add_unit'),
     path('sales',views.add_sales,name='add_sales'),
-    path('vendor/',views.vendor,name='vendor'),
-    path('add_vendor/',views.add_vendor,name='add_vendor'),
     path('sample/',views.sample,name="sample"),
     path('view_vendor_list/',views.view_vendor_list,name='view_vendor_list'),
     path('view_vendor_details/<int:pk>',views.view_vendor_details,name='view_vendor_details'),
@@ -99,6 +97,26 @@ urlpatterns = [
     path('save_edit_bnk/<int:id>',views.save_edit_bnk,name='save_edit_bnk'),
     path('save_banking_edit/<int:id>',views.save_banking_edit,name='save_banking_edit'),
     path('save_bank',views.save_bank,name='save_bank'),
+    path('entr_custmr',views.entr_custmr,name='entr_custmr'),
+    path('payment_term',views.payment_term,name='payment_term'),
+    path('get_customer_names', views.get_customer_names, name='get_customer_names'),
+    path('expense/delete/<int:expense_id>/', views.delete_expense, name='delete_expense'),
+    path('get_profile_details/<int:profile_id>/', views.get_profile_details, name='get_profile_details'),
+    path('recurringhome',views.recurringhome,name='recurringhome'),
+    path('add_expense',views.add_expense,name='add_expense'),
+    path('recurringbase',views.recurringbase,name='recurringbase'),
+    path('show_recurring/<int:expense_id>/', views.show_recurring, name='show_recurring'),
+    path('expense_details', views.expense_details, name='expense_details'),
+    path('vendor/',views.vendor,name='vendor'),
+    path('add_vendor/',views.add_vendor,name='add_vendor'),
+    path('edit_expense/<int:expense_id>/', views.edit_expense, name='edit_expense'),
+    path('newexp',views.newexp,name='newexp'),
+    path('save-data/', save_data, name='save_data'),
+    path('get-account-names/', views.get_account_names, name='get_account_names'),
+    path('profileshow',views.profileshow,name='profileshow'),
+    path('add_customer',views.add_customer,name='add_customer'),
+    path('entr_custmr',views.entr_custmr,name='entr_custmr'),
+    path('payment_term',views.payment_term,name='payment_term'),
     
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     
