@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-    
+
 <section>
   <div class="row fixed-top" style="top: 7rem; margin-left: 18rem;">
     <div class="col-md-12" style="right: 0;">
@@ -14,7 +14,28 @@
                 <i class="fa-solid fa-plus"></i>New
               </a>
             </div>
-          </div> 
+            <div class="col-md-4" style="margin-top: -3rem;">
+              <a style="color: white;width: 4rem;height: 2rem;margin-top: 3rem;background-color:black;" class="btn btn-success" href="{% url 'recurringhome' %}">
+                <i class="fa-solid fa-plus"></i>Filter
+              </a>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <form id="filter-form" method="GET" action="#">
+                <div class="form-group">
+                  <label for="filter-select">Filter By:</label>
+                  <select class="form-control" id="filter-select" name="filter">
+                    <option value="last_1_day">Last 1 day</option>
+                    <option value="last_30_days">Last 30 days</option>
+                    <option value="last_6_months">Last 6 months</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Apply Filter</button>
+              </form>
+            </div>
+          </div>
           <table class="table text-white">
             <thead>
               <tr>
@@ -33,7 +54,7 @@
                 <td><hr></td>
               </tr>
             </tbody>
-          </table>
+          </table><br><br>
         </div>
         
         <div class="col-md-9" style="margin-left: 25rem;">
@@ -65,11 +86,11 @@
     
          
     
-        <div style="height: 600px; overflow-y: scroll;">
+        <div style="height: 600px; overflow-y: scroll;width:820px;">
         <div class="tabs"><br><br>
         <div class="tab-header"><br><br>
     
-         <div class="active">
+         <div class="active" style="color:#6e6eb7a3;font-size:35px;font-weight:500;">
            <i class="fa fa code"></i>OverView
          </div><br><br>
     
@@ -81,33 +102,33 @@
         <div class="tab-body">
          <div class="activ ">
           <h6 class="mr-5">Repeat Every:</h6>
-          <h6 style="margin-top: -1.7rem; margin-left: 10rem;" id="repeat-every">{{ expense.repeat_every }}</h6>
+          <h6 style="margin-top: -1.8rem; margin-left: 13rem;font-size:20px;" id="repeat-every">{{ expense.repeat_every }}</h6><br>
     
            <h6 class="mr-5">Start Date:</h6>
-           <h6 style="margin-top: -1.7rem; margin-left: 10rem;" id="start-date" >{{expense.start_date}}</h6> 
+           <h6 style="margin-top: -1.7rem; margin-left: 13rem;font-size:20px;" id="start-date" >{{expense.start_date}}</h6> 
     
            <h6 class="mr-4 ">Ends On:</h6>
-           <h6 style="margin-top: -1.9rem; margin-left: 10rem; margin-bottom: 2rem;" id="ends-on">{{expense.ends_on}}</h6> 
+           <h6 style="margin-top: -1.9rem; margin-left: 13rem; margin-bottom: 2rem;font-size:20px;" id="ends-on">{{expense.ends_on}}</h6> 
           <h6 class="mr-5">Expense Account:</h6> <br>
-          <h6 style="margin-top: -3rem; margin-left: 10rem;" id="expense-account">{{expense.expense_account}}</h6> <br>
+          <h6 style="margin-top: -3.2rem; margin-left: 13rem;font-size:20px;" id="expense-account">{{expense.expense_account}}</h6> <br>
           <h6 class="mr-5">Expense Type:</h6>
-          <h6 style="margin-top: -2rem; margin-left: 10rem;" id="expense-type">{{ expense.expense_type }} {{expense.goods_label}}</h6> <br>
+          <h6 style="margin-top: -1.8rem; margin-left: 13rem;font-size:20px;" id="expense-type">{{ expense.expense_type }} {{expense.goods_label}}</h6> <br>
           <h6 class="mr-5">Amount:</h6>
-          <h6 style="margin-top: -2rem; margin-left: 10rem;" id="amount">{{expense.amount}}</h6> <br>
+          <h6 style="margin-top: -1.8rem; margin-left: 13rem;font-size:20px;" id="amount">{{expense.amount}}</h6> <br>
           <h6 class="mr-5">Paid Through:</h6> <br>
-          <h6 style="margin-top: -3rem; margin-left: 10rem;" id="paidthrough">{{expense.paidthrough}}</h6> <br>
+          <h6 style="margin-top: -3.2rem; margin-left: 13rem;font-size:20px;" id="paidthrough">{{expense.paidthrough}}</h6> <br>
           <h6 class="mr-5">Vendor:</h6>
-          <h6 style="margin-top: -2rem; margin-left: 10rem;" id="vendor">{{expense.vendor.vendor_display_name}}</h6> <br>
+          <h6 style="margin-top: -1.8rem; margin-left: 13rem;font-size:20px;" id="vendor">{{expense.vendor.vendor_display_name}}</h6> <br>
           <h6 class="mr-5">GST Treatment:</h6>
-          <h6 style="margin-top: -2rem; margin-left: 10rem;" id="gst">{{expense.gst}}</h6><br>
+          <h6 style="margin-top: -2rem; margin-left: 13rem;font-size:20px;" id="gst">{{expense.gst}}</h6><br>
           <h6 class="mr-5">Destination Of Supply:</h6>
-          <h6 style="margin-top: -1.7rem; margin-left: 12rem;" id="destination">{{expense.destination}}</h6> <br>
+          <h6 style="margin-top: -1.7rem; margin-left: 13rem;font-size:20px;" id="destination">{{expense.destination}}</h6> <br>
           <h6 class="mr-5">Tax:</h6>
-          <h6 style="margin-top: -2rem; margin-left: 10rem;" id="tax">{{expense.tax}}</h6> <br>
+          <h6 style="margin-top: -2rem; margin-left: 13rem;font-size:20px;" id="tax">{{expense.tax}}</h6> <br>
           <h6 class="mr-5">Notes:</h6>
-          <h6 style="margin-top: -2rem; margin-left: 10rem;" id="notes">{{expense.notes}}</h6> <br>
+          <h6 style="margin-top: -2rem; margin-left: 13rem;font-size:20px;" id="notes">{{expense.notes}}</h6> <br>
           <h6 class="mr-5">Customer Name:</h6>
-          <h6 style="margin-top: -2rem; margin-left: 10rem;" id="customername">{{expense.customername}}</h6> <br>
+          <h6 style="margin-top: -2rem; margin-left: 13rem;font-size:20px;" id="customername">{{expense.customername}}</h6> <br>
            
          </div>
     
@@ -170,8 +191,7 @@
    </div>
   
   </div>
-   </div>
-  </div>
+
 </section>
 
 <script>

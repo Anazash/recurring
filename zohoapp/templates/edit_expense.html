@@ -2,6 +2,49 @@
 {% load static %}
 
 {% block content %}
+<style>
+  .card-body {
+
+    padding: 20px;
+    border-radius: 5px;
+
+    margin-left: 250px;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  td {
+    padding: 50px;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 50%;
+    padding: 14px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+</style>
+
 
 <div class="fixed-top" style="top: 8rem; margin-left: 18rem;" >
 <div style="height: 600px; overflow-y: scroll;">
@@ -34,11 +77,11 @@
         
             <tr>
               <td>Start Date:</td>
-              <td><input type="date" name="start_date" value="{{ expense.start_date|date:'Y-m-d' }}"></td>
+              <td><input type="date" name="start_date" value="{{ expense.start_date|date:'Y-m-d' }}" style="width:50%;padding:10px;"></td>
             </tr>
             <tr>
               <td>Ends On:</td>
-              <td><input type="date" name="ends_on" value="{{ expense.ends_on|date:'Y-m-d' }}"></td>
+              <td><input type="date" name="ends_on" value="{{ expense.ends_on|date:'Y-m-d' }}"style="width:50%;padding:10px;"></td>
             </tr>
             <tr>
             <td>Expense Account:</td>
@@ -135,9 +178,11 @@
               <td>Tax:</td>
               <td>
                   <select name="tax">
-                      <option value="8%" {% if expense.tax == "8%" %}selected{% endif %}>8%</option>
-                      <option value="12%" {% if expense.tax == "12%" %}selected{% endif %}>12%</option>
-                      <option value="18%" {% if expense.tax == "18%" %}selected{% endif %}>18%</option>
+                      <option value="GST0[0%]" {% if expense.tax == "GST0[0%]" %}selected{% endif %}>GST0[0%]</option>
+                      <option value="GST5[5%]" {% if expense.tax == "GST5[5%]" %}selected{% endif %}>GST5[5%]</option>
+                      <option value="GST12[12%]" {% if expense.tax == "GST12[12%]" %}selected{% endif %}>GST12[12%]</option>
+                      <option value="GST18[18%]" {% if expense.tax == "GST18[18%]" %}selected{% endif %}>GST18[18%]</option>
+                      <option value="GST28[28%]" {% if expense.tax == "GST28[28%]" %}selected{% endif %}>GST28[28%]</option>
                   </select>
               </td>
             </tr>
@@ -158,8 +203,8 @@
           </tr>
           
           </tbody>
-      </table>
-      <button type="submit" class="btn btn-primary">Save</button>
+      </table><br><br>
+      <button type="submit" class="btn btn-primary" style="margin-left: 250px;width: 150px;">Save</button>
     </form>
   </div>
 </div>
